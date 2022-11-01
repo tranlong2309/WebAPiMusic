@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32421.90
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APIMusic", "APIMusic\APIMusic.csproj", "{639EBF03-3E1F-4AAE-B0C8-3246911B8790}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APIMusicEntities", "APIMusicEntities\APIMusicEntities.csproj", "{162D1E9B-A202-4A77-B81F-F9412B26D370}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{639EBF03-3E1F-4AAE-B0C8-3246911B8790}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{639EBF03-3E1F-4AAE-B0C8-3246911B8790}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{639EBF03-3E1F-4AAE-B0C8-3246911B8790}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{639EBF03-3E1F-4AAE-B0C8-3246911B8790}.Release|Any CPU.Build.0 = Release|Any CPU
+		{162D1E9B-A202-4A77-B81F-F9412B26D370}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{162D1E9B-A202-4A77-B81F-F9412B26D370}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{162D1E9B-A202-4A77-B81F-F9412B26D370}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{162D1E9B-A202-4A77-B81F-F9412B26D370}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A1F81319-A292-47D0-8E29-5678D844EFBB}
+	EndGlobalSection
+EndGlobal
