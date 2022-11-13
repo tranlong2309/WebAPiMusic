@@ -89,7 +89,7 @@ namespace APIMusic.Services.Impl
         {
             var firebaseConfig = new Firebase.Auth.FirebaseConfig("AIzaSyDtEurPdLWlPH67T_VuqUESsI9YXcmZayw");
             var auth = new Firebase.Auth.FirebaseAuthProvider(firebaseConfig);
-            var login = auth.SignInWithEmailAndPasswordAsync("tranvanlong230900@gmail.com", "dacn123456");
+            var login = auth.SignInWithEmailAndPasswordAsync("lethanhhauh7@gmail.com", "thanhhau123456");
             return login.GetAwaiter().GetResult().FirebaseToken;
         }
 

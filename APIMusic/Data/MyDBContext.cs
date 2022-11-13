@@ -55,8 +55,7 @@ namespace APIMusic.Data
             modelBuilder.Entity<DetailSongSinger>(entity =>
             {
                 entity.ToTable("DetailSongSinger");
-                entity.HasKey(k => new { k.IdTheSong, k.IdSinger });
-
+                entity.HasKey(k => new {k.Id, k.IdTheSong, k.IdSinger });
                 entity.HasOne(e => e.TheSong)
                 .WithMany(w => w.DetailSongSingers)
                 .HasForeignKey(f => f.IdTheSong);
@@ -111,7 +110,7 @@ namespace APIMusic.Data
             modelBuilder.Entity<ListLike>(entity =>
             {
                 entity.ToTable("Listlike");
-                entity.HasKey(k => new { k.IdListener, k.IdTheSong });
+                entity.HasKey(k => new { k.Id, k.IdListener, k.IdTheSong });
 
                 entity.HasOne(e => e.TheSong)
                 .WithMany(w => w.ListLikes)
@@ -141,7 +140,7 @@ namespace APIMusic.Data
             modelBuilder.Entity<DetailPlaylistSong>(entity =>
             {
                 entity.ToTable("DetailPlaylistSong");
-                entity.HasKey(k => new { k.IdPlaylist, k.IdTheSong });
+                entity.HasKey(k => new { k.Id, k.IdPlaylist, k.IdTheSong });
 
                 entity.HasOne(e => e.TheSong)
                 .WithMany(w => w.DetailPlaylistSongs)
@@ -155,7 +154,7 @@ namespace APIMusic.Data
             modelBuilder.Entity<FollowSingers>(entity =>
             {
                 entity.ToTable("FollowSingers");
-                entity.HasKey(k => new { k.IdSinger, k.IdListener });
+                entity.HasKey(k => new { k.Id, k.IdSinger, k.IdListener });
 
                 entity.HasOne(e => e.Singer)
                 .WithMany(w => w.FollowSingers)

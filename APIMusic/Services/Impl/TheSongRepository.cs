@@ -27,7 +27,7 @@ namespace APIMusic.Services.Impl
                     Image = urlImage,
                     IdUrlSong = IdSong,
                     IdTheSongOfCategory = 6,
-                    DateUpdate=DateTime.Now 
+                    DateUpdate=DateTime.Now
                 };
 
                 _context.TheSongs.Add(theSong);
@@ -40,20 +40,39 @@ namespace APIMusic.Services.Impl
             }
         }
 
-        public List<TheSong> GetAll()
+        public bool CreateDetailSongSinger(CreateSingerSongRequest request)
         {
-            var listSong = _context.TheSongs.Select(s => new TheSong
+            try
             {
-                Id = s.Id,
-                NameSong = s.NameSong,
-                Url = s.Url,
-                Image = s.Image,
-                describe = s.describe,
-                DateUpdate=s.DateUpdate
+                var DetailSongSinger = new APIMusicEntities.Models.DetailSongSinger
+                {
+                    IdTheSong= request.idSong,
+                    IdSinger=request.idSinger,
+                    DateUpdate = DateTime.Now
+                };
+
+                _context.DetailSongSingers.Add(DetailSongSinger);
+                _context.SaveChanges();
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+        }
+        public List<TheSongResponse> GetAll()
+        {
+            var listSong = _context.TheSongs.Select(s => new TheSongResponse
+            {
+                Name=s.NameSong,
+                Singers = s.DetailSongSingers.Select(s=>s.Singer.NameSinger).ToArray(),
+                Path=s.Url,
+                Image=s.Image
 
             }).ToList();
 
                return listSong;
         }
+
     }
 }

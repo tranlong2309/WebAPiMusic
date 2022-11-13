@@ -50,12 +50,28 @@ namespace APIMusic.Controllers
 
         }
 
+        [HttpPost("logout")]
+        public IActionResult Logout()
+        {
+            try
+            {
+                Response.Cookies.Delete("refreshToken");
+                return Ok(new{ Success=true });
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+           
+
+        }
+
         [AllowAnonymous]
         [HttpPost("refresh-token")]
-        public IActionResult RefreshToken()
+        public IActionResult RefreshToken(RefreshTokenRequest model)
         {
-            var refreshToken = Request.Cookies["refreshToken"];
-            var response = _userService.RefreshToken(refreshToken, ipAddress());
+            //var refreshToken = Request.Cookies["refreshToken"];
+            var response = _userService.RefreshToken(model.RefreshToken, ipAddress());
             setTokenCookie(response.RefreshToken);
             return Ok(response);
         }

@@ -11,7 +11,7 @@ namespace APIMusic.Models.Response
         public string JwtToken { get; set; }
 
 
-        [JsonIgnore] // refresh token is returned in http only cookie
+        //[JsonIgnore] // refresh token is returned in http only cookie
         public string RefreshToken { get; set; }
 
         public AuthenticateResponses(User user, string jwtToken, string refreshToken)

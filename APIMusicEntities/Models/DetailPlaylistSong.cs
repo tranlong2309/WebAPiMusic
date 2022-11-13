@@ -6,12 +6,10 @@ using System.Threading.Tasks;
 
 namespace APIMusicEntities.Models
 {
-    public class DetailPlaylistSong
+    public class DetailPlaylistSong:BaseEntity
     {
         public int IdPlaylist { get; set; }
         public int IdTheSong { get; set; }
-        public DateTime CreateDate { get; set; }
-        public string Describe { get; set; }
         public virtual TheSong TheSong { get; set; }
         public virtual Playlist Playlist { get; set; }
     }

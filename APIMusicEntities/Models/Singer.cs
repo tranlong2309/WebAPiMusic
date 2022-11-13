@@ -10,7 +10,6 @@ namespace APIMusicEntities.Models
     {
         [Required]
         public  string NameSinger { get; set; }
-        public TheSong TheSong { get; set; }
         public ICollection<DetailSongSinger> DetailSongSingers { get; set; }
         public ICollection<FollowSingers> FollowSingers { get; set; }
         

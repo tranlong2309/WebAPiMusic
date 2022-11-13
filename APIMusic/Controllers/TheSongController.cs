@@ -12,6 +12,7 @@ using APIMusic.Models.Requests;
 
 namespace APIMusic.Controllers
 {
+    [Authorize]
     [Route("[controller]")]
     [ApiController]
     public class TheSongController : ControllerBase
@@ -24,7 +25,6 @@ namespace APIMusic.Controllers
             _firebaseStorageService = firebaseStorageService;
         }
   
-
         [AllowAnonymous]
         [HttpGet("GetAll")]
         public IActionResult GetALL()
@@ -75,6 +75,22 @@ namespace APIMusic.Controllers
             var urlImage = await _firebaseStorageService.PutFileToFirebaseAsync(request.FileImage.OpenReadStream(), Path.GetExtension(request.FileImage.FileName));
 
             var res = _theSongRepository.CreateTheSong(request, urlSong[0], urlImage, urlSong[1]);
+
+            if (res)
+            {
+                return Ok("Thanh cong");
+            }
+            else
+            {
+                return Ok("That bai");
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpPost("create-song-singer")]
+        public async Task<IActionResult> CreateSongSinger(CreateSingerSongRequest request)
+        {
+            var res = _theSongRepository.CreateDetailSongSinger(request);
 
             if (res)
             {

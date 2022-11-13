@@ -4,14 +4,16 @@ using APIMusic.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace APIMusic.Migrations
 {
     [DbContext(typeof(MyDBContext))]
-    partial class MyDBContextModelSnapshot : ModelSnapshot
+    [Migration("20221105151437_int7")]
+    partial class int7
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -103,7 +105,7 @@ namespace APIMusic.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Album");
+                    b.ToTable("Album1");
                 });
 
             modelBuilder.Entity("APIMusicEntities.Models.Category", b =>
@@ -136,9 +138,6 @@ namespace APIMusic.Migrations
 
             modelBuilder.Entity("APIMusicEntities.Models.DetailPlaylistSong", b =>
                 {
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
                     b.Property<int>("IdPlaylist")
                         .HasColumnType("int");
 
@@ -148,12 +147,13 @@ namespace APIMusic.Migrations
                     b.Property<DateTime>("DateUpdate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
                     b.Property<string>("describe")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id", "IdPlaylist", "IdTheSong");
-
-                    b.HasIndex("IdPlaylist");
+                    b.HasKey("IdPlaylist", "IdTheSong");
 
                     b.HasIndex("IdTheSong");
 
@@ -162,9 +162,6 @@ namespace APIMusic.Migrations
 
             modelBuilder.Entity("APIMusicEntities.Models.DetailSongSinger", b =>
                 {
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
                     b.Property<int>("IdTheSong")
                         .HasColumnType("int");
 
@@ -174,49 +171,42 @@ namespace APIMusic.Migrations
                     b.Property<DateTime>("DateUpdate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
                     b.Property<string>("describe")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id", "IdTheSong", "IdSinger");
+                    b.HasKey("IdTheSong", "IdSinger");
 
                     b.HasIndex("IdSinger");
-
-                    b.HasIndex("IdTheSong");
 
                     b.ToTable("DetailSongSinger");
                 });
 
             modelBuilder.Entity("APIMusicEntities.Models.FollowSingers", b =>
                 {
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
                     b.Property<int>("IdSinger")
                         .HasColumnType("int");
 
                     b.Property<int>("IdListener")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("DateUpdate")
+                    b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("describe")
+                    b.Property<string>("Describe")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id", "IdSinger", "IdListener");
+                    b.HasKey("IdSinger", "IdListener");
 
                     b.HasIndex("IdListener");
-
-                    b.HasIndex("IdSinger");
 
                     b.ToTable("FollowSingers");
                 });
 
             modelBuilder.Entity("APIMusicEntities.Models.ListLike", b =>
                 {
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
                     b.Property<int>("IdListener")
                         .HasColumnType("int");
 
@@ -226,12 +216,13 @@ namespace APIMusic.Migrations
                     b.Property<DateTime>("DateUpdate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
                     b.Property<string>("describe")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id", "IdListener", "IdTheSong");
-
-                    b.HasIndex("IdListener");
+                    b.HasKey("IdListener", "IdTheSong");
 
                     b.HasIndex("IdTheSong");
 
