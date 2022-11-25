@@ -48,6 +48,7 @@ namespace APIMusic
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ITheSongRepository, TheSongRepository>();
             services.AddScoped<IFirebaseStorageService, FirebaseStorageService>();
+            services.AddScoped<ISinger, Singer>();
 
             services.AddSwaggerGen(c =>
             {

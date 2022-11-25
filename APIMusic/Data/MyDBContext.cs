@@ -50,6 +50,9 @@ namespace APIMusic.Data
                 entity.Property(p => p.NameSinger)
                 .IsRequired(true)
                 .HasMaxLength(250);
+                entity.Property(p => p.UrlImage)
+                .IsRequired(true);
+          
             });
 
             modelBuilder.Entity<DetailSongSinger>(entity =>

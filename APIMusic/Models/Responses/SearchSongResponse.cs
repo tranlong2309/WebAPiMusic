@@ -1,11 +1,8 @@
-﻿using APIMusicEntities.Models;
-using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 
 namespace APIMusic.Models.Responses
 {
-    public class TheSongResponse
+    public class SearchSongResponse
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -14,5 +11,4 @@ namespace APIMusic.Models.Responses
         public string Image { get; set; }
         public int Index { get; set; }
     }
-
 }

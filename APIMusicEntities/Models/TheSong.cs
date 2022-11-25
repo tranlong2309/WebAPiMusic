@@ -16,6 +16,7 @@ namespace APIMusicEntities.Models
         public int? IdTheSongOfCategory { get; set; }
         public int? IdTheSongOfAlbum { get; set; }
         public string IdUrlSong { get; set; }
+        public long Listens { get; set; }
         public ICollection<DetailSongSinger> DetailSongSingers { get; set; }
         public ICollection<ListLike> ListLikes { get; set; }
         public ICollection<DetailPlaylistSong> DetailPlaylistSongs { get; set; }

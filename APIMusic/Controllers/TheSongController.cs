@@ -2,11 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using APIMusic.Authorization;
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.Drive.v3;
-using Google.Apis.Services;
 using System.IO;
-using System;
 using System.Threading.Tasks;
 using APIMusic.Models.Requests;
 
@@ -78,17 +74,17 @@ namespace APIMusic.Controllers
 
             if (res)
             {
-                return Ok("Thanh cong");
+                return Ok(true);
             }
             else
             {
-                return Ok("That bai");
+                return Ok(false);
             }
         }
 
         [AllowAnonymous]
         [HttpPost("create-song-singer")]
-        public async Task<IActionResult> CreateSongSinger(CreateSingerSongRequest request)
+        public IActionResult CreateSongSinger(CreateSingerSongRequest request)
         {
             var res = _theSongRepository.CreateDetailSongSinger(request);
 
@@ -100,6 +96,142 @@ namespace APIMusic.Controllers
             {
                 return Ok("That bai");
             }
+        }
+
+
+        [AllowAnonymous]
+        [HttpGet("Get-category")]
+        public IActionResult GetALLCategory()
+        {
+            try
+            {
+                var data = _theSongRepository.GetCategories();
+                if (data == null)
+                {
+                    return NotFound();
+                }
+                return Ok(data);
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
+        }
+
+
+        [AllowAnonymous]
+        [HttpGet("get-brand-category")]
+        public IActionResult GetBrandCategory()
+        {
+            try
+            {
+                var data = _theSongRepository.GetBrandCategory();
+                if (data == null)
+                {
+                    return NotFound();
+                }
+                return Ok(data);
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
+        }
+
+        [HttpPost("create-category")]
+        public async Task<IActionResult> CreateCategory([FromForm] RequestCreateCategory request)
+        {
+            var urlImage = await _firebaseStorageService.PutFileToFirebaseAsync(request.FileImage.OpenReadStream(), Path.GetExtension(request.FileImage.FileName));
+
+            var res = _theSongRepository.CreateCategory(request.NameCategory,urlImage);
+
+            if (res)
+            {
+                return Ok(true);
+            }
+            else
+            {
+                return Ok(false);
+            }
+        }
+
+        [HttpPost("create-album")]
+        public async Task<IActionResult> CreateAlbum([FromForm] CreateAlbum request)
+        {
+            var urlImage = await _firebaseStorageService.PutFileToFirebaseAsync(request.FileImage.OpenReadStream(), Path.GetExtension(request.FileImage.FileName));
+
+            var res = _theSongRepository.CreateAlbum(request.NameAlbum, urlImage);
+
+            if (res)
+            {
+                return Ok(true);
+            }
+            else
+            {
+                return Ok(false);
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpGet("get-all-album")]
+        public IActionResult GetAlbum()
+        {
+            
+            var res = _theSongRepository.GetAlbum();
+
+            return Ok(res);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("get-all-category")]
+        public IActionResult GetCategory()
+        {
+
+            var res = _theSongRepository.GetCategory();
+
+            return Ok(res);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("get-search-song")]
+        public IActionResult SearchSong(string keyword)
+       {
+
+            var res = _theSongRepository.SearchSong(keyword);
+
+            return Ok(res);
+        }
+
+        [AllowAnonymous]
+        [HttpPut("update-listens")]
+        public IActionResult UpdateListen(int id)
+        {
+
+            var res = _theSongRepository.Updatelisten(id);
+
+            return Ok(res);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("get-song-chart")]
+        public IActionResult GetSongChart()
+        {
+            try
+            {
+                var data = _theSongRepository.GetSongChart();
+                if (data == null)
+                {
+                    return NotFound();
+                }
+                return Ok(data);
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
         }
 
     }

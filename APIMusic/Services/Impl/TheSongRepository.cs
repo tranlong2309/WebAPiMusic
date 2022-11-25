@@ -1,13 +1,14 @@
 ﻿using APIMusic.Data;
 using APIMusic.Models.Requests;
 using APIMusic.Models.Responses;
+using APIMusicEntities.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace APIMusic.Services.Impl
 {
-    public class TheSongRepository: ITheSongRepository
+    public class TheSongRepository : ITheSongRepository
     {
         private readonly MyDBContext _context;
 
@@ -16,7 +17,7 @@ namespace APIMusic.Services.Impl
             _context = context;
         }
 
-        public bool CreateTheSong(CreateTheSong request,string urlSong, string urlImage, string IdSong)
+        public bool CreateTheSong(CreateTheSong request, string urlSong, string urlImage, string IdSong)
         {
             try
             {
@@ -26,8 +27,8 @@ namespace APIMusic.Services.Impl
                     Url = urlSong,
                     Image = urlImage,
                     IdUrlSong = IdSong,
-                    IdTheSongOfCategory = 6,
-                    DateUpdate=DateTime.Now
+                    IdTheSongOfCategory = request.IdCategory,
+                    DateUpdate = DateTime.Now
                 };
 
                 _context.TheSongs.Add(theSong);
@@ -46,8 +47,8 @@ namespace APIMusic.Services.Impl
             {
                 var DetailSongSinger = new APIMusicEntities.Models.DetailSongSinger
                 {
-                    IdTheSong= request.idSong,
-                    IdSinger=request.idSinger,
+                    IdTheSong = request.idSong,
+                    IdSinger = request.idSinger,
                     DateUpdate = DateTime.Now
                 };
 
@@ -62,17 +63,174 @@ namespace APIMusic.Services.Impl
         }
         public List<TheSongResponse> GetAll()
         {
-            var listSong = _context.TheSongs.Select(s => new TheSongResponse
+            int indexx = 0;
+            var listSong = _context.TheSongs.OrderByDescending(o=>o.DateUpdate).Select(s => new TheSongResponse
             {
-                Name=s.NameSong,
-                Singers = s.DetailSongSingers.Select(s=>s.Singer.NameSinger).ToArray(),
-                Path=s.Url,
-                Image=s.Image
+                Id=s.Id,
+                Name = s.NameSong,
+                Singers = s.DetailSongSingers.Select(s => s.Singer.NameSinger).ToArray(),
+                Path = s.Url,
+                Image = s.Image,
+                Index= 0
 
             }).ToList();
 
-               return listSong;
+            foreach (var item in listSong){
+                item.Index = indexx++;
+            }
+
+            return listSong;
         }
 
+        public List<GetCategory> GetCategories()
+        {
+            var listCategory = _context.Categories.Select(s => new GetCategory
+            {
+                Header = s.NameCategory,
+                Playlists = s.TheSongs.Select(s1 => new Models.Responses.Playlist
+                {
+                    Name = s1.NameSong,
+                    Artists = s1.DetailSongSingers.Select(s2 => s2.Singer.NameSinger).ToArray(),
+                    Image = s1.Image
+                }).ToList()
+
+            }).Where(w => w.Playlists.Count > 0).ToList();
+
+            return listCategory;
+        }
+
+        public List<GetBrandCategory> GetBrandCategory()
+        {
+            var list = _context.Categories.Select(s => new GetBrandCategory { Image= s.ImageCategory }).ToList();
+            return list;
+        }
+        public bool CreateCategory(string name,string image)
+        {
+            try
+            {
+                var create = new Category
+                {
+                    NameCategory = name,
+                    ImageCategory = image
+                };
+
+                _context.Categories.Add(create);
+                _context.SaveChanges();
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public bool CreateAlbum(string name, string image)
+        {
+            try
+            {
+                var cretae = new Album
+                {
+                    NameAlbum = name,
+                    ImageAlbum = image
+                };
+                _context.Albums.Add(cretae);
+                _context.SaveChanges();
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+        }
+
+        public List<CategoryResponse> GetCategory()
+        {
+            var list = _context.Categories.Select(s => new CategoryResponse
+            {
+                Id = s.Id,
+                NameCategory = s.NameCategory
+            }).ToList();
+
+            return list;
+        }
+
+        public List<AlbumResponse> GetAlbum()
+        {
+            var list = _context.Albums.Select(s => new AlbumResponse
+            {
+                Id = s.Id,
+                NameAlbum = s.NameAlbum
+            }).ToList();
+
+            return list;
+        }
+
+        public List<SearchSongResponse> SearchSong(string res)
+        {
+            var listSong = _context.TheSongs.Select(s => new SearchSongResponse
+            {
+                Id=s.Id,
+                Name = s.NameSong,
+                Singers = s.DetailSongSingers.Select(s => s.Singer.NameSinger).ToArray(),
+                Path = s.Url,
+                Image = s.Image,
+                Index= 0
+
+
+            }).Where(w=>w.Name.Contains(res)).ToList();
+            foreach (var item in listSong)
+            {
+                item.Index = GetAll().Where(ww => ww.Id == item.Id).Select(ss => ss.Index).First();
+            };
+
+            return listSong;
+        }
+
+        public bool Updatelisten(int id)
+        {
+            try
+            {
+                var song = _context.TheSongs.Where(w => w.Id == id).FirstOrDefault();
+                if (song != null)
+                {
+                    song.Listens = song.Listens + 1;
+                    _context.TheSongs.Update(song);
+                    _context.SaveChanges();
+                }
+               
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+        }
+        public List<SongRankResponse> GetSongChart()
+        {
+            int rank = 1;
+            var listSong = _context.TheSongs.OrderByDescending(o => o.Listens).Select(s => new SongRankResponse
+            {
+                Id = s.Id,
+                Name = s.NameSong,
+                Singers = s.DetailSongSingers.Select(s => s.Singer.NameSinger).ToArray(),
+                Path = s.Url,
+                Image = s.Image,
+                Index = 0,
+                Rank=0
+                
+
+            }).ToList();
+
+            foreach (var item in listSong)
+            {
+                item.Index = GetAll().Where(ww => ww.Id == item.Id).Select(ss => ss.Index).First();
+                item.Rank = rank ++;
+            }
+
+            return listSong;
+        }
     }
 }
