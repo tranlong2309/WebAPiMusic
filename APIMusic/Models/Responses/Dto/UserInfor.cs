@@ -12,5 +12,6 @@ namespace APIMusic.Models.Responses.Dto
         public Role Role { get; set; }
         public string Name { get; set; }
         public string Username { get; set; }
+        public int IdListener { get; set; }
     }
 }

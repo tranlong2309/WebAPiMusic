@@ -40,13 +40,8 @@ namespace APIMusic.Controllers
         public IActionResult RegisterUser(RegisterUserRequest request)
         {
             var response = _userService.RegisterUser(request);
-            if(response)
-            {
-                return Ok("thanh cong");
-            }else
-            {
-                return Ok("That bai");
-            }
+            return Ok(response);
+
 
         }
 

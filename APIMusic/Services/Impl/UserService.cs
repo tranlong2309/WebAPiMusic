@@ -55,6 +55,7 @@ namespace APIMusic.Services.Impl
             var refreshToken = _jwtUtils.GenerateRefreshToken(ipAddress);
             user.RefreshTokens.Add(refreshToken);
 
+            var listener = _context.Listeners.Where(w => w.IdListenerOfUser == user.Id).FirstOrDefault();
             // remove old refresh tokens from user
             removeOldRefreshTokens(user);
 
@@ -62,7 +63,7 @@ namespace APIMusic.Services.Impl
             _context.Update(user);
             _context.SaveChanges();
 
-            return new AuthenticateResponses(user, jwtToken, refreshToken.Token);
+            return new AuthenticateResponses(user, jwtToken, refreshToken.Token,listener);
         }
 
         public AuthenticateResponses RefreshToken(string token, string ipAddress)
@@ -85,6 +86,7 @@ namespace APIMusic.Services.Impl
             var newRefreshToken = rotateRefreshToken(refreshToken, ipAddress);
             user.RefreshTokens.Add(newRefreshToken);
 
+            var listener = _context.Listeners.Where(w => w.IdListenerOfUser == user.Id).FirstOrDefault();
             // remove old refresh tokens from user
             removeOldRefreshTokens(user);
 
@@ -95,7 +97,7 @@ namespace APIMusic.Services.Impl
             // generate new jwt
             var jwtToken = _jwtUtils.GenerateJwtToken(user);
 
-            return new AuthenticateResponses(user, jwtToken, newRefreshToken.Token);
+            return new AuthenticateResponses(user, jwtToken, newRefreshToken.Token, listener);
         }
 
         public void RevokeToken(string token, string ipAddress)
@@ -179,14 +181,14 @@ namespace APIMusic.Services.Impl
             {
                 var user = new User
                 {
-                    FirstName = request.Name,
-                    LastName = "User",
+                    FirstName = request.FirstName,
+                    LastName = request.LastName,
                     Username = request.UserName,
                     PasswordHash = BCryptNet.HashPassword(request.Password),
                     Role = Role.User,
                     Listener=new APIMusicEntities.Models.Listener
                     {
-                       FullName= request.Name,
+                       FullName= request.FirstName+" "+ request.LastName,
                        DateUpdate=DateTime.Now
                     }
                 };

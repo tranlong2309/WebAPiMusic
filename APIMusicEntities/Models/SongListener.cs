@@ -13,6 +13,7 @@ namespace APIMusicEntities.Models
         public string Image { get; set; }
         public string IdUrlSong { get; set; }
         public int IdListenerOfSong { get; set; }
+        public string Singer { get; set; }
         public virtual Listener Listener { get; set; }
     }
 }

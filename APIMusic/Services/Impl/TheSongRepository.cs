@@ -61,7 +61,7 @@ namespace APIMusic.Services.Impl
                 return false;
             }
         }
-        public List<TheSongResponse> GetAll()
+        public List<TheSongResponse> GetAll(int id)
         {
             int indexx = 0;
             var listSong = _context.TheSongs.OrderByDescending(o=>o.DateUpdate).Select(s => new TheSongResponse
@@ -74,11 +74,30 @@ namespace APIMusic.Services.Impl
                 Index= 0
 
             }).ToList();
-
-            foreach (var item in listSong){
+            foreach (var item in listSong)
+            {
                 item.Index = indexx++;
             }
+            var SongListeners = _context.SongListeners.Where(w => w.IdListenerOfSong == id).OrderByDescending(o => o.DateUpdate).Select(s => new TheSongResponse
+            {
+                Id = s.Id,
+                Name = s.NameSong,
+                Path = s.UrlSong,
+                Image = s.Image,
+                Singers = new[] { s.Singer },
+                Index = 0
 
+            }).ToList();
+            if(SongListeners.Count > 0)
+            {
+                indexx = listSong.Count;
+                foreach (var item in SongListeners)
+                {
+                    item.Index = indexx++;
+                }
+                listSong = SongListeners.Concat(listSong).ToList();
+
+            }
             return listSong;
         }
 
@@ -183,7 +202,7 @@ namespace APIMusic.Services.Impl
             }).Where(w=>w.Name.Contains(res)).ToList();
             foreach (var item in listSong)
             {
-                item.Index = GetAll().Where(ww => ww.Id == item.Id).Select(ss => ss.Index).First();
+                item.Index = GetAll(0).Where(ww => ww.Id == item.Id).Select(ss => ss.Index).First();
             };
 
             return listSong;
@@ -226,8 +245,60 @@ namespace APIMusic.Services.Impl
 
             foreach (var item in listSong)
             {
-                item.Index = GetAll().Where(ww => ww.Id == item.Id).Select(ss => ss.Index).First();
+                item.Index = GetAll(0).Where(ww => ww.Id == item.Id).Select(ss => ss.Index).First();
                 item.Rank = rank ++;
+            }
+
+            return listSong;
+        }
+
+        public bool CreateUpload(int id,string name,string singer,string url)
+        {
+            try
+            {
+                if (singer == null)
+                {
+                    singer = "Various Artists";
+                }
+
+                var upload = new SongListener
+                {
+                    IdListenerOfSong=id,
+                    NameSong = name,
+                    UrlSong = url,
+                    Image = "https://photo-resize-zmp3.zmdcdn.me/w94_r1x1_webp/cover/3/2/a/3/32a35f4d26ee56366397c09953f6c269.jpg",
+                    DateUpdate=DateTime.Now,
+                    Singer= singer
+
+                };
+
+                _context.SongListeners.Add(upload);
+                _context.SaveChanges();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public List<TheSongResponse> GetMusicListener(int id)
+        {
+            int indexx = GetAll(0).Count();
+            var listSong = _context.SongListeners.Where(w=>w.IdListenerOfSong==id).OrderByDescending(o => o.DateUpdate).Select(s => new TheSongResponse
+            {
+                Id = s.Id,
+                Name = s.NameSong,
+                Path = s.UrlSong,
+                Image = s.Image,
+                Singers = new[] { s.Singer },
+                Index = 0
+
+            }).ToList();
+
+            foreach (var item in listSong)
+            {
+                item.Index = indexx++;
             }
 
             return listSong;

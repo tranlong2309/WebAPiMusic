@@ -5,6 +5,7 @@ using APIMusic.Authorization;
 using System.IO;
 using System.Threading.Tasks;
 using APIMusic.Models.Requests;
+using System;
 
 namespace APIMusic.Controllers
 {
@@ -23,11 +24,11 @@ namespace APIMusic.Controllers
   
         [AllowAnonymous]
         [HttpGet("GetAll")]
-        public IActionResult GetALL()
+        public IActionResult GetALL(int id)
         {
             try
             {
-                var data = _theSongRepository.GetAll();
+                var data = _theSongRepository.GetAll(id);
                 if (data == null)
                 {
                     return NotFound();
@@ -67,6 +68,7 @@ namespace APIMusic.Controllers
         [HttpPost("create-the-song")]
         public async Task<IActionResult> CreateTheSong([FromForm] CreateTheSong request)
         {
+            string Artist = "Various Artists";
             var urlSong = await _firebaseStorageService.PutFile(request.FileSong.OpenReadStream(), Path.GetExtension(request.FileSong.FileName));
             var urlImage = await _firebaseStorageService.PutFileToFirebaseAsync(request.FileImage.OpenReadStream(), Path.GetExtension(request.FileImage.FileName));
 
@@ -164,14 +166,7 @@ namespace APIMusic.Controllers
 
             var res = _theSongRepository.CreateAlbum(request.NameAlbum, urlImage);
 
-            if (res)
-            {
-                return Ok(true);
-            }
-            else
-            {
-                return Ok(false);
-            }
+            return Ok(res);
         }
 
         [AllowAnonymous]
@@ -232,6 +227,27 @@ namespace APIMusic.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
+        }
+        
+        [HttpPost("create-upload")]
+        public async Task<IActionResult> CreateUpload([FromForm] CreateUpload request)
+            {
+            var urlSong = await _firebaseStorageService.PutFileToFirebaseAsync(request.FileSong.OpenReadStream(), Path.GetExtension(request.FileSong.FileName));
+            var tfile = TagLib.File.Create(@"C:\Users\DELL\OneDrive\Desktop\DataMusic\"+ request.FileSong.FileName);
+            string title = tfile.Tag.Title;
+   
+            var res = _theSongRepository.CreateUpload(request.IdListener,title, tfile.Tag.Artists[0], urlSong);
+                
+            return Ok(res);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("get-music-listener")]
+        public IActionResult GetMusicListener(int id)
+        {
+            var res = _theSongRepository.GetMusicListener(id);
+
+            return Ok(res);
         }
 
     }

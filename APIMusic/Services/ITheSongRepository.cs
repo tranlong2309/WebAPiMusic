@@ -6,7 +6,7 @@ namespace APIMusic.Services
 {
     public interface ITheSongRepository
     {
-        List<TheSongResponse> GetAll();
+        List<TheSongResponse> GetAll(int id);
         bool CreateTheSong(CreateTheSong request, string urlSong, string urlImage, string IdSong);
         bool CreateDetailSongSinger(CreateSingerSongRequest request);
         List<GetCategory> GetCategories();
@@ -18,5 +18,7 @@ namespace APIMusic.Services
         List<SearchSongResponse> SearchSong(string res);
         bool Updatelisten(int id);
         List<SongRankResponse> GetSongChart();
+        bool CreateUpload(int id, string name, string singer, string url);
+        List<TheSongResponse> GetMusicListener(int id);
     }
 }
