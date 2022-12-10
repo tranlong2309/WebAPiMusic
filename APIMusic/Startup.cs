@@ -48,6 +48,7 @@ namespace APIMusic
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ITheSongRepository, TheSongRepository>();
             services.AddScoped<IFirebaseStorageService, FirebaseStorageService>();
+            services.AddScoped<IUploadFile, UploadFile>();
             services.AddScoped<ISinger, Singer>();
 
             services.AddSwaggerGen(c =>
@@ -69,6 +70,7 @@ namespace APIMusic
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "APIMusic"));
             }
 
+            app.UseStaticFiles();
             app.UseCors(x => x
                 .SetIsOriginAllowed(origin => true)
                 .AllowAnyMethod()

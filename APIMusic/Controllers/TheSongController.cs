@@ -6,6 +6,7 @@ using System.IO;
 using System.Threading.Tasks;
 using APIMusic.Models.Requests;
 using System;
+using Microsoft.AspNetCore.Hosting;
 
 namespace APIMusic.Controllers
 {
@@ -16,12 +17,17 @@ namespace APIMusic.Controllers
     {
         private readonly ITheSongRepository _theSongRepository;
         private readonly IFirebaseStorageService _firebaseStorageService;
-        public TheSongController(ITheSongRepository theSongRepository, IFirebaseStorageService firebaseStorageService)
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IUploadFile _uploadFile;
+        public TheSongController(ITheSongRepository theSongRepository, IFirebaseStorageService firebaseStorageService,IWebHostEnvironment webHostEnvironment, IUploadFile uploadFile)
         {
+           
             _theSongRepository = theSongRepository;
             _firebaseStorageService = firebaseStorageService;
+            _webHostEnvironment = webHostEnvironment;
+            _uploadFile = uploadFile;
         }
-  
+
         [AllowAnonymous]
         [HttpGet("GetAll")]
         public IActionResult GetALL(int id)
@@ -68,11 +74,12 @@ namespace APIMusic.Controllers
         [HttpPost("create-the-song")]
         public async Task<IActionResult> CreateTheSong([FromForm] CreateTheSong request)
         {
-            string Artist = "Various Artists";
-            var urlSong = await _firebaseStorageService.PutFile(request.FileSong.OpenReadStream(), Path.GetExtension(request.FileSong.FileName));
-            var urlImage = await _firebaseStorageService.PutFileToFirebaseAsync(request.FileImage.OpenReadStream(), Path.GetExtension(request.FileImage.FileName));
-
-            var res = _theSongRepository.CreateTheSong(request, urlSong[0], urlImage, urlSong[1]);
+            string PORT = "https://" + Request.Host.ToString();
+            //var urlSong = await _firebaseStorageService.PutFile(request.FileSong.OpenReadStream(), Path.GetExtension(request.FileSong.FileName));
+            //var urlImage = await _firebaseStorageService.PutFileToFirebaseAsync(request.FileImage.OpenReadStream(), Path.GetExtension(request.FileImage.FileName));
+            var urlSong = await _uploadFile.PutFile(request.FileSong, "MP3");
+            var urlImage = await _uploadFile.PutFile(request.FileImage, "IMAGE");
+            var res = _theSongRepository.CreateTheSong(request, PORT+urlSong, PORT + urlImage, string.Empty);
 
             if (res)
             {
@@ -145,9 +152,10 @@ namespace APIMusic.Controllers
         [HttpPost("create-category")]
         public async Task<IActionResult> CreateCategory([FromForm] RequestCreateCategory request)
         {
-            var urlImage = await _firebaseStorageService.PutFileToFirebaseAsync(request.FileImage.OpenReadStream(), Path.GetExtension(request.FileImage.FileName));
+            string PORT = "https://" + Request.Host.ToString();
+            var urlImage = await _uploadFile.PutFile(request.FileImage, "IMAGE");
 
-            var res = _theSongRepository.CreateCategory(request.NameCategory,urlImage);
+            var res = _theSongRepository.CreateCategory(request.NameCategory,PORT+ urlImage);
 
             if (res)
             {
@@ -162,9 +170,10 @@ namespace APIMusic.Controllers
         [HttpPost("create-album")]
         public async Task<IActionResult> CreateAlbum([FromForm] CreateAlbum request)
         {
-            var urlImage = await _firebaseStorageService.PutFileToFirebaseAsync(request.FileImage.OpenReadStream(), Path.GetExtension(request.FileImage.FileName));
+            string PORT = "https://" + Request.Host.ToString();
+            var urlImage = await _uploadFile.PutFile(request.FileImage, "IMAGE");
 
-            var res = _theSongRepository.CreateAlbum(request.NameAlbum, urlImage);
+            var res = _theSongRepository.CreateAlbum(request.NameAlbum,PORT+ urlImage);
 
             return Ok(res);
         }
@@ -231,12 +240,13 @@ namespace APIMusic.Controllers
         
         [HttpPost("create-upload")]
         public async Task<IActionResult> CreateUpload([FromForm] CreateUpload request)
-            {
-            var urlSong = await _firebaseStorageService.PutFileToFirebaseAsync(request.FileSong.OpenReadStream(), Path.GetExtension(request.FileSong.FileName));
-            var tfile = TagLib.File.Create(@"C:\Users\DELL\OneDrive\Desktop\DataMusic\"+ request.FileSong.FileName);
+        {
+            string PORT = "https://" + Request.Host.ToString();
+            var urlSong = await _uploadFile.PutFile(request.FileSong, "ListerSong");
+            var tfile = TagLib.File.Create(@"E:\WebMusicAPI\WebAPIMusic\APIMusic\wwwroot\ListerSong\" + request.FileSong.FileName);
             string title = tfile.Tag.Title;
    
-            var res = _theSongRepository.CreateUpload(request.IdListener,title, tfile.Tag.Artists[0], urlSong);
+            var res = _theSongRepository.CreateUpload(request.IdListener,title, tfile.Tag.Artists[0],PORT+urlSong);
                 
             return Ok(res);
         }

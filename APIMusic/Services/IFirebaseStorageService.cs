@@ -12,7 +12,6 @@ namespace APIMusic.Services
     {
         Task<string> PutFileToFirebaseAsync(Stream stream, string extensionFileName);
         Task<string[]> PutFile(Stream stream, string extensionFileName);
-
         Task<FileDto> DownloadFileFromFireBaseAsync(string fileName);
     }
 }

@@ -29,4 +29,10 @@
     <ProjectReference Include="..\APIMusicEntities\APIMusicEntities.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+    <Folder Include="wwwroot\IMAGE\" />
+    <Folder Include="wwwroot\MP3\" />
+  </ItemGroup>
+
 </Project>
